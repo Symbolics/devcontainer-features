@@ -1,7 +1,7 @@
 {
     "name": "Steel Bank Common Lisp",
     "id": "sbcl",
-    "version": "1.0.0",
+    "version": "2.5.6",
     "description": "Install the Steel Bank Common Lisp programming language.",
     "keywords": [
         "lisp",

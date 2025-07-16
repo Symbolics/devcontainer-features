@@ -1,0 +1,27 @@
+{
+    "name": "Common Lisp Enhanced REPL",
+    "id": "aclrepl",
+    "version": "1.0.0",
+    "description": "Install an enhanced REPL for Common Lisp with additional features.",
+    "keywords": [
+        "lisp",
+        "common lisp",
+        "repl",
+        "aclrepl"
+    ],
+    "dependsOn": {
+        "ghcr.io/symbolics/devcontainer-features/quicklisp": "latest"
+    },
+    "options": {
+        "enable_linedit": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable line editing capabilities in the REPL."
+        },
+        "make_slim": {
+            "type": "boolean",
+            "default": true,
+            "description": "Remove build dependencies after installation to reduce image size."
+        }
+    }
+}

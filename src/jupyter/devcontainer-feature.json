@@ -1,0 +1,17 @@
+{
+    "name": "Lisp-Stat Jupyter Kernel",
+    "id": "jupyter",
+    "version": "1.0.0",
+    "description": "Install Lisp-Stat Jupyter kernel",
+    "keywords": [
+        "jupyter",
+        "notebook",
+        "lisp-stat",
+        "common-lisp",
+        "kernel",
+        "clj"
+    ],
+    "dependsOn": {
+        "ghcr.io/symbolics/devcontainer-features/quicklisp:latest": {}
+    }
+}

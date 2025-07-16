@@ -1,0 +1,36 @@
+{
+    "name": "Quicklisp",
+    "id": "quicklisp",
+    "version": "1.0.0", // Quicklisp does not use semantic versioning, but devcontainer features require it
+    "description": "Install the Quicklisp package manager for Common Lisp.",
+    "keywords": [
+        "lisp",
+        "common lisp",
+        "quicklisp"
+    ],
+    "dependsOn": {
+        "ghcr.io/symbolics/devcontainer-features/sbcl:latest": {}
+    },
+    "options": {
+        "make_slim": {
+            "type": "boolean",
+            "default": true,
+            "description": "Remove build dependencies after installation to reduce image size."
+        },
+        "dist_version": {
+            "type": "string",
+            "default": "latest",
+            "description": "Version of the Quicklisp distribution to install."
+        },
+        "client_version": {
+            "type": "string",
+            "default": "latest",
+            "description": "Version of the Quicklisp client to install."
+        },
+        "add_to_init_file": {
+            "type": "boolean",
+            "default": true,
+            "description": "Add Quicklisp to the Lisp implementation's init file."
+            }
+        }
+    }
