@@ -86,9 +86,6 @@ install_jupyter_kernel() {
 install_lisp_stat() {
     echo "Installing Lisp-Stat..."
     check_packages build-essential ca-certificates libblas3 liblapack3 sqlite3
-
-
-
     su ${USERNAME} -c "sbcl --non-interactive \
         --eval \"(ql:quickload '(:lisp-stat :plot/vega))\""
 }
@@ -108,16 +105,14 @@ configure_lisp_stat() {
 
 EOF
 
-
-    git clone https://github.com/vincentarelbundock/Rdatasets.git ~/Rdatasets
     cat <<EOF >> ~/.ls-init.lisp
 ;;; -*- Mode: LISP; Base: 10; Syntax: Ansi-Common-Lisp; Package: LS-USER -*-
 ;;; Copyright (c) 2021-2025 by Symbolics Pte. Ltd.  All rights reserved.
 (in-package #:ls-user)
 
 ;;; Define logical hosts for external data sets
-(setf (logical-pathname-translations "RDATA")
-      \`(("**;*.*.*" ,(merge-pathnames "csv/**/*.*" "~/Rdatasets/"))))
+;(setf (logical-pathname-translations "RDATA")
+;      \`(("**;*.*.*" ,(merge-pathnames "csv/**/*.*" "~/Rdatasets/"))))
 
 (defparameter *default-datasets*
   '("tooth-growth" "plant-growth" "usarrests" "iris" "mtcars")
