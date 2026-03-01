@@ -9,7 +9,7 @@
         "quicklisp"
     ],
     "dependsOn": {
-        "ghcr.io/symbolics/devcontainer-features/sbcl:latest": {}
+        "./sbcl": {}
     },
     "options": {
         "make_slim": {

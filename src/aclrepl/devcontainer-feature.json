@@ -10,7 +10,7 @@
         "aclrepl"
     ],
     "dependsOn": {
-        "ghcr.io/symbolics/devcontainer-features/quicklisp": "latest"
+        "./quicklisp": {}
     },
     "options": {
         "enable_linedit": {

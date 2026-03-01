@@ -12,6 +12,6 @@
         "clj"
     ],
     "dependsOn": {
-        "ghcr.io/symbolics/devcontainer-features/quicklisp:latest": {}
+        "./quicklisp": {}
     }
 }
