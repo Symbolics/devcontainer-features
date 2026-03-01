@@ -12,7 +12,7 @@
     }
   },
     "dependsOn": {
-        "./quicklisp": {}
+        "ghcr.io/symbolics/devcontainer-features/quicklisp:latest": {}
     },
   "postCreateCommand": "sudo /usr/local/share/lisp-stat/link-local-projects.sh"
 }
