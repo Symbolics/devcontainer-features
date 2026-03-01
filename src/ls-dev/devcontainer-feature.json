@@ -1,0 +1,18 @@
+{
+  "name": "ls-dev",
+  "id": "ls-dev",
+  "version": "1.0.0",
+  "description": "Development environment for lisp-stat with configurable BLAS libraries.",
+  "options": {
+    "blas": {
+      "type": "string",
+      "description": "Choose BLAS library",
+      "enum": ["intel-mkl", "openblas"],
+      "default": "openblas"
+    }
+  },
+    "dependsOn": {
+        "ghcr.io/symbolics/devcontainer-features/quicklisp:latest": {}
+    },
+  "postCreateCommand": "sudo /usr/local/share/lisp-stat/link-local-projects.sh"
+}

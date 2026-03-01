@@ -1,0 +1,61 @@
+name: "Release dev container features & Generate Documentation"
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/**'
+      - '.github/workflows/release.yml'
+
+jobs:
+  deploy:
+    if: ${{ github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: "Publish Features"
+        uses: devcontainers/action@v1
+        with:
+          publish-features: "true"
+          base-path-to-features: "./src"
+          generate-docs: "true"
+          
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create PR for Documentation
+        id: push_image_info
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          echo "Start."
+          
+          # Configure git
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          
+          # Create a new branch for PR
+          branch=automated-documentation-update-$GITHUB_RUN_ID
+          git checkout -b "$branch"
+          
+          # Add changes and commit
+          git add .
+          message='Automated documentation update'
+          git commit -m "$message" || export NO_UPDATES=true
+          
+          # Push if there are updates
+          if [ "$NO_UPDATES" != "true" ] ; then
+            git push origin "$branch"
+            
+            gh pr create \
+              --title "$message" \
+              --body "Auto-generated Documentation updates from release workflow" \
+              --base master \
+              --head "$branch"
+          fi
