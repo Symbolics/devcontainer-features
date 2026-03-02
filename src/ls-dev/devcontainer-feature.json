@@ -1,7 +1,7 @@
 {
   "name": "ls-dev",
   "id": "ls-dev",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Development environment for lisp-stat with configurable BLAS libraries.",
   "options": {
     "blas": {
