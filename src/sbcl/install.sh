@@ -112,7 +112,7 @@ install_sbcl
 configure_asdf
 if [ "${MAKE_SLIM}" = "true" ]; then
     echo "Removing build dependencies for slim image..."
-    cleanup_build_packages curl time libz-dev m4 sbcl ca-certificates file libzstd-dev build-essential git
+    cleanup_build_packages curl time libz-dev m4 sbcl ca-certificates file libzstd-dev
 fi
 cleanup_apt
 echo "Done!"

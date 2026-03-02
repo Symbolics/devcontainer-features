@@ -1,7 +1,7 @@
 {
     "name": "Steel Bank Common Lisp",
     "id": "sbcl",
-    "version": "2.6.2",
+    "version": "2.6.3",
     "description": "Install the Steel Bank Common Lisp programming language.",
     "keywords": [
         "lisp",
@@ -11,7 +11,7 @@
     "options": {
         "make_slim": {
             "type": "boolean",
-            "default": true,
+            "default": false,
             "description": "Remove build dependencies after installation to reduce image size."
         }
     }

@@ -111,7 +111,7 @@ if [ ${ENABLE_LINEDIT} ]; then
 fi
 
 if [ "${MAKE_SLIM}" = "true" ]; then
-    echo "Removing build-essential and git for slim image..."
+    echo "Removing git for slim image..."
     cleanup_build_packages git
 fi
 

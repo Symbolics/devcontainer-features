@@ -1,7 +1,7 @@
 {
     "name": "Quicklisp",
     "id": "quicklisp",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Install the Quicklisp package manager for Common Lisp.",
     "keywords": [
         "lisp",
@@ -14,7 +14,7 @@
     "options": {
         "make_slim": {
             "type": "boolean",
-            "default": true,
+            "default": false,
             "description": "Remove build dependencies after installation to reduce image size."
         },
         "dist_version": {
