@@ -172,5 +172,6 @@ configure_lisp_stat
 cleanup_apt
 install -d -m 0755 /usr/local/share/lisp-stat
 install -m 0755 ./link-local-projects.sh /usr/local/share/lisp-stat/link-local-projects.sh
+install -m 0755 ./ls-fork.sh /usr/local/bin/ls-fork
 
 echo "Done!"
