@@ -53,13 +53,13 @@ cleanup_build_packages() {
 
 install_linedit() {
     echo "Installing linedit..."
-    cd /usr/local/src
-    git clone https://github.com/sharplispers/linedit.git
-    # Load linedit using Quicklisp to obtain dependencies
-    /usr/local/bin/sbcl --noinform --eval '(ql:quickload :linedit)' --non-interactive
+    # Clone as root into /usr/local/src (root-owned); make world-readable
+    git clone https://github.com/sharplispers/linedit.git /usr/local/src/linedit
+    chmod -R a+rX /usr/local/src/linedit
+    # Load linedit via Quicklisp as the target user so it is registered in ~/quicklisp
+    su "${USERNAME}" -c '/usr/local/bin/sbcl --noinform --non-interactive --eval "(ql:quickload :linedit)"'
     echo "Linedit installed successfully."
 }
-export -f install_linedit
 
 # Write a separate init file for terminal REPL enhancements.
 # This is loaded by the ls-repl wrapper script, NOT by .sbclrc,
@@ -100,10 +100,14 @@ export DEBIAN_FRONTEND=noninteractive
 cleanup_apt
 
 check_packages build-essential git
-su ${USERNAME} -c install_linedit
+install_linedit
 su ${USERNAME} -c configure_repl_init
 
 # Install the ls-repl wrapper script
+if [ ! -f ./ls-repl ]; then
+    echo "ERROR: ./ls-repl not found in feature directory. Aborting." >&2
+    exit 1
+fi
 install -m 0755 ./ls-repl /usr/local/bin/ls-repl
 
 if [ "${MAKE_SLIM}" = "true" ]; then

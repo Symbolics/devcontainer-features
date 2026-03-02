@@ -1,7 +1,7 @@
 {
     "name": "Common Lisp Enhanced REPL",
     "id": "aclrepl",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Install an enhanced REPL for Common Lisp with additional features.",
     "keywords": [
         "lisp",

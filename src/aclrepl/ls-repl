@@ -1,0 +1,5 @@
+#!/bin/bash
+# ls-repl — launch SBCL with aclrepl aliases and linedit line editing.
+# .sbclrc is loaded automatically by SBCL first (Quicklisp, LLA, Lisp-Stat),
+# then this script layers on the interactive terminal enhancements.
+exec sbcl --noinform --load "$HOME/.sbcl-repl-init.lisp" "$@"
