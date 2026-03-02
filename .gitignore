@@ -1,0 +1,3 @@
+# Top-level .devcontainer/ is used only for testing features locally in VS Code.
+# The actual feature source lives under src/ and should not reference this directory.
+.devcontainer/

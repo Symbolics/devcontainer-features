@@ -7,7 +7,7 @@
 # What it does:
 #   1. Checks gh authentication
 #   2. Forks every repo in ~/quicklisp/local-projects/ to your GitHub account
-#   3. Clones your fork to /workspaces/lisp-stat/<repo> (persists across rebuilds)
+#   3. Clones your fork to /workspaces/lisp-stat/<repo> (persists when mounted — see README)
 #   4. Adds 'upstream' remote pointing back to the Lisp-Stat origin
 #   5. Replaces ~/quicklisp/local-projects/<repo> with a symlink to the clone
 #
@@ -39,6 +39,22 @@ echo "Forking repos into /workspaces/lisp-stat/ ..."
 echo ""
 
 mkdir -p "${WORKSPACE}"
+
+# ── Persistent-mount check ─────────────────────────────────────────────────────
+# In Codespaces /workspaces is always a persistent volume.
+# In VS Code Dev Containers or docker run, the user must supply a mount;
+# otherwise fork clones will be destroyed on container rebuild.
+if [ -z "${CODESPACES:-}" ] && ! findmnt --target "${WORKSPACE}" --noheadings >/dev/null 2>&1; then
+    echo "WARNING: ${WORKSPACE} is not on a persistent mount."
+    echo "         Fork clones will be lost if the container is rebuilt."
+    echo ""
+    echo "  VS Code Dev Containers — add to devcontainer.json:"
+    echo '    "mounts": ["source=lisp-stat-forks,target=/workspaces/lisp-stat,type=volume"]'
+    echo ""
+    echo "  docker run — add a volume flag:"
+    echo "    -v lisp-stat-forks:/workspaces/lisp-stat"
+    echo ""
+fi
 
 # ── Per-repo loop ──────────────────────────────────────────────────────────────
 
