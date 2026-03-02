@@ -58,7 +58,7 @@ jobs:
           
           # Push if there are updates
           if [ "$NO_UPDATES" != "true" ] ; then
-            git push origin "$branch"
+            git push --force origin "$branch"
             
             gh pr create \
               --title "$message" \
