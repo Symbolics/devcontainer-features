@@ -1,7 +1,7 @@
 {
   "name": "ls-dev",
   "id": "ls-dev",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "description": "Development environment for lisp-stat with configurable BLAS libraries.",
   "options": {
     "blas": {
@@ -9,6 +9,11 @@
       "description": "Choose BLAS library",
       "enum": ["intel-mkl", "openblas"],
       "default": "openblas"
+    },
+    "install_emacs": {
+      "type": "boolean",
+      "description": "Install Emacs (nox) with SLIME for Common Lisp development",
+      "default": true
     }
   },
     "dependsOn": {

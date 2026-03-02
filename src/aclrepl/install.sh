@@ -53,49 +53,45 @@ cleanup_build_packages() {
 
 install_linedit() {
     echo "Installing linedit..."
-    # Clone the linedit repository
     cd /usr/local/src
     git clone https://github.com/sharplispers/linedit.git
     # Load linedit using Quicklisp to obtain dependencies
-    /usr/local/bin/sbcl --noinform --eval '(ql:quickload :linedit)'
-    cat <<EOF >> ~/.sbclrc
-(ql:quickload :linedit)
-(linedit:install-repl :wrap-current t :eof-quits t)
-
-EOF
+    /usr/local/bin/sbcl --noinform --eval '(ql:quickload :linedit)' --non-interactive
     echo "Linedit installed successfully."
 }
 export -f install_linedit
 
-configure_aclrepl() {
-    echo "Configuring ACLREPL..."
-    cat <<EOF >> ~/.sbclrc
-(ignore-errors (require 'sb-aclrepl))
-(ignore-errors (require 'asdf))
-(ignore-errors (require 'quicklisp))
+# Write a separate init file for terminal REPL enhancements.
+# This is loaded by the ls-repl wrapper script, NOT by .sbclrc,
+# so it never interferes with SLIME/Swank.
+configure_repl_init() {
+    echo "Writing terminal REPL init to ~/.sbcl-repl-init.lisp..."
+    cat <<'EOF' > ~/.sbcl-repl-init.lisp
+;;; -*- Mode: LISP; Syntax: Common-Lisp -*-
+;;; Terminal REPL enhancements — loaded by the ls-repl wrapper script.
+;;; This file is NOT loaded by .sbclrc, keeping SLIME/Swank clean.
 
-;; Consider using prepl, which has more features and is more actively maintained.
+;;; ACLREPL — Allegro-style toplevel aliases
+(ignore-errors (require 'sb-aclrepl))
 (when (find-package 'sb-aclrepl)
   (push :aclrepl cl:*features*))
- #+aclrepl
- (progn
-   (setq sb-aclrepl:*max-history* 100)
-   (sb-aclrepl:alias ("cs" 1 "compile system") (sys) (asdf:operate 'asdf:compile-op sys))
-   (sb-aclrepl:alias ("ls" 1 "load system") (sys) (asdf:operate 'asdf:load-op sys))
-   (sb-aclrepl:alias ("ts" 1 "test system") (sys) (asdf:operate 'asdf:test-op sys))
+#+aclrepl
+(progn
+  (setq sb-aclrepl:*max-history* 100)
+  (sb-aclrepl:alias ("cs" 1 "compile system") (sys) (asdf:operate 'asdf:compile-op sys))
+  (sb-aclrepl:alias ("ls" 1 "load system") (sys) (asdf:operate 'asdf:load-op sys))
+  (sb-aclrepl:alias ("ts" 1 "test system") (sys) (asdf:operate 'asdf:test-op sys))
+  (sb-aclrepl:alias ("up" 1 "use package") (package) (use-package package))
+  (sb-aclrepl:alias ("ql" 1 "quickload" system) (sys) (ql:quickload sys))
+  (sb-aclrepl:alias ("require" 0 "require module") (sys) (require sys))
+  (setq cl:*features* (delete :aclrepl cl:*features*)))
 
-   ;; The 1 below means that two characters ("up") are required
-   (sb-aclrepl:alias ("up" 1 "use package") (package) (use-package package))
-   (sb-aclrepl:alias ("ql" 1 "quickload" system) (sys) (ql:quickload sys))
-   
-   ;; The 0 below means only the first letter ("r") is required,
-   ;; such as ":r base64"
-   (sb-aclrepl:alias ("require" 0 "require module") (sys) (require sys))
-   (setq cl:*features* (delete :aclrepl cl:*features*)))
-
+;;; Linedit — nicer line editing for the terminal REPL
+(ql:quickload :linedit :silent t)
+(uiop:symbol-call :linedit :install-repl :wrap-current t :eof-quits t)
 EOF
 }
-export -f configure_aclrepl
+export -f configure_repl_init
 
 
 # Main script execution starts here
@@ -103,12 +99,12 @@ echo "Installing aclrepl..."
 export DEBIAN_FRONTEND=noninteractive
 cleanup_apt
 
-su ${USERNAME} -c configure_aclrepl
+check_packages build-essential git
+su ${USERNAME} -c install_linedit
+su ${USERNAME} -c configure_repl_init
 
-if [ ${ENABLE_LINEDIT} ]; then
-    check_packages build-essential git
-    su ${USERNAME} -c install_linedit
-fi
+# Install the ls-repl wrapper script
+install -m 0755 ./ls-repl /usr/local/bin/ls-repl
 
 if [ "${MAKE_SLIM}" = "true" ]; then
     echo "Removing git for slim image..."
