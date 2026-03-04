@@ -196,7 +196,7 @@ EOF
 # Main script execution starts here
 echo "Installing Lisp-Stat..."
 
-check_packages ca-certificates gh
+check_packages ca-certificates gh tmux sqlite3
 
 if [ "${BLAS}" = "intel-mkl" ]; then
     install_mkl
