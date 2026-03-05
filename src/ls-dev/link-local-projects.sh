@@ -6,6 +6,7 @@ REMOTE_USER="${_REMOTE_USER:-${USERNAME:-vscode}}"
 REMOTE_HOME="$(getent passwd "${REMOTE_USER}" | cut -d: -f6 || true)"
 REMOTE_HOME="${REMOTE_HOME:-$HOME}"
 
+mkdir -p /workspaces/ls-dev
 SRC="${REMOTE_HOME}/quicklisp/local-projects"
 DEST="/workspaces/ls-dev"
 
