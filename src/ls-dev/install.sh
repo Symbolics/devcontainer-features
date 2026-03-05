@@ -168,6 +168,10 @@ install_emacs_slime() {
 
 EMACSEOF
 
+    cat >> /home/${USERNAME}/.bashrc <<'BASHRC_EOF'
+export EDITOR="emacs"
+BASHRC_EOF
+
     chown -R "${USERNAME}:${USERNAME}" /home/${USERNAME}/.emacs.d
     echo "Emacs and SLIME installed. Start Emacs and run M-x slime to launch the REPL."
 }
