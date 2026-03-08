@@ -75,26 +75,6 @@ install_openblas() {
     check_packages libblas3 liblapack3
 }
 
-install_lisp_stat_src() {
-    mkdir -p /home/$USERNAME/quicklisp/local-projects && \
-    (cd /home/$USERNAME/quicklisp/local-projects && \
-    git clone https://github.com/Lisp-Stat/data-frame.git && \
-    git clone https://github.com/Lisp-Stat/dfio.git && \
-    git clone https://github.com/Lisp-Stat/special-functions.git && \
-    git clone https://github.com/Lisp-Stat/numerical-utilities.git && \
-    git clone https://github.com/Lisp-Stat/array-operations.git && \
-    git clone https://github.com/Lisp-Stat/documentation.git && \
-    git clone https://github.com/Lisp-Stat/distributions.git && \
-    git clone https://github.com/Lisp-Stat/plot.git && \
-    git clone https://github.com/Lisp-Stat/select.git && \
-    git clone https://github.com/Lisp-Stat/cephes.cl.git && \
-    git clone https://github.com/Symbolics/alexandria-plus.git && \
-    git clone https://github.com/Lisp-Stat/statistics.git && \
-    git clone https://github.com/Lisp-Stat/lisp-stat.git && \
-    git clone https://github.com/Lisp-Stat/lla.git)
-    chown -R $USERNAME:$USERNAME /home/$USERNAME/quicklisp/local-projects
-}
-
 
 #TODO: We should probably just rewrite the entirety of .sbclrc
 configure_lisp_stat() {
@@ -113,14 +93,14 @@ EOF
 
 
     git clone https://github.com/vincentarelbundock/Rdatasets.git /usr/local/src/Rdatasets
-    cat <<EOF >> /home/$USERNAME/.ls-init.lisp
+    cat <<'EOF' >> /home/$USERNAME/.ls-init.lisp
 ;;; -*- Mode: LISP; Base: 10; Syntax: Ansi-Common-Lisp; Package: LS-USER -*-
 ;;; Copyright (c) 2021-2026 by Symbolics Pte. Ltd.  All rights reserved.
 (in-package #:ls-user)
 
 ;;; Define logical hosts for external data sets
 (setf (logical-pathname-translations "RDATA")
-      \`(("**;*" ,(merge-pathnames "csv/**/*" "/usr/local/src/Rdatasets/"))))
+      `(("**;*" ,(merge-pathnames "csv/**/*" "/usr/local/src/Rdatasets/"))))
 
 (defparameter *default-datasets*
   '("tooth-growth" "plant-growth" "usarrests" "iris" "mtcars")
@@ -130,6 +110,18 @@ EOF
 	     (format t "Loading ~A~%" x)
 	     (dfio:data x))
 	     *default-datasets*)
+
+(ql:quickload :plot/vega)
+(data :vgcars)
+(vega:defplot hp-mpg
+ `(:title "Horsepower vs. MPG"
+   :data (:url ,(quri:uri "http://localhost:20202/table/VGCARS"))
+   :mark :point
+   :encoding (:x (:field :horsepower :type "quantitative")
+              :y (:field :miles-per-gallon :type "quantitative"))))
+
+(ql:quickload :ls-server)
+(ls-server:start-server)
 
 EOF
 chown $USERNAME:$USERNAME -R /home/$USERNAME/.sbclrc /home/$USERNAME/.ls-init.lisp
@@ -197,7 +189,15 @@ configure_mkl() {
 EOF
 }
 
+set_motd() {
+    echo "Welcome to your Lisp-Stat development environment!
+For documentation, see: https://github.com/Lisp-Stat
+To begin, run: ls-init.sh" > /etc/motd
+}
+
+#
 # Main script execution starts here
+#
 echo "Installing Lisp-Stat..."
 
 check_packages ca-certificates gh tmux sqlite3
@@ -210,16 +210,17 @@ else
     configure_openblas
 fi
 
-install_lisp_stat_src
-configure_lisp_stat
+#install_lisp_stat_src
+set_motd
 
 if [ "${INSTALL_EMACS}" = "true" ]; then
     install_emacs_slime
 fi
 
+configure_lisp_stat
 cleanup_apt
-install -d -m 0755 /usr/local/share/lisp-stat
-install -m 0755 ./link-local-projects.sh /usr/local/share/lisp-stat/link-local-projects.sh
-install -m 0755 ./ls-fork.sh /usr/local/bin/ls-fork
+
+# Install the unified setup script
+install -m 0755 ./ls-init.sh /usr/local/bin/ls-init.sh
 
 echo "Done!"
