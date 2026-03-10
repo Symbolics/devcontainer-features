@@ -85,9 +85,9 @@ configure_lisp_stat() {
 (setf cl:*print-pretty* t)
 (when (asdf:find-system 'lisp-stat nil)
     (ql:quickload :lisp-stat)
-    (in-package :ls-user))
-(when (probe-file #P"~/.ls-init.lisp")
-    (load #P"~/.ls-init.lisp"))
+    (in-package :ls-user)
+    (when (probe-file #P"~/.ls-init.lisp")
+      (load #P"~/.ls-init.lisp")))
 
 EOF
 
